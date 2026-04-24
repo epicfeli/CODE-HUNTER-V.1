@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeHunter · EasyFly Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0A1628;
+  --bg-soft: #0F1F35;
+  --bg-card: #162B47;
+  --accent: #FF6B35;
+  --accent-glow: #FF8C5A;
+  --teal: #14B8A6;
+  --teal-dark: #0D9488;
+  --yellow: #FBBF24;
+  --purple: #A78BFA;
+  --text: #F1F5F9;
+  --text-dim: #94A3B8;
+  --text-faint: #64748B;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-bright: rgba(255, 255, 255, 0.16);
+  --red: #EF4444;
+  --green: #10B981;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+body {
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Ambient background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 100%, rgba(20, 184, 166, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Grid texture */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+/* ===== HEADER ===== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(15, 31, 53, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent) 0%, #FF4500 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+  font-size: 18px;
+}
+
+.logo-text {
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.logo-text span {
+  color: var(--accent);
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.stat-item .icon {
+  font-size: 18px;
+}
+
+.lives {
+  display: flex;
+  gap: 2px;
+}
+
+.life {
+  font-size: 18px;
+  transition: all 0.3s;
+}
+
+.life.lost {
+  filter: grayscale(1);
+  opacity: 0.3;
+  transform: scale(0.85);
+}
+
+/* ===== HOME SCREEN ===== */
+.screen {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero {
+  text-align: center;
+  padding: 32px 16px 40px;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: rgba(20, 184, 166, 0.15);
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-size: clamp(38px, 8vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+.hero h1 .accent {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--yellow) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  font-size: 16px;
+  color: var(--text-dim);
+  max-width: 460px;
+  margin: 0 auto 28px;
+  line-height: 1.5;
+}
+
+/* ===== LEVEL MAP ===== */
+.levels {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.level-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+.level-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 107, 53, 0.03) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.level-card:hover:not(.locked) {
+  transform: translateY(-2px);
+  border-color: var(--border-bright);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.level-card:hover:not(.locked)::before {
+  opacity: 1;
+}
+
+.level-card.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.level-card.completed {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.level-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 50px;
+  letter-spacing: -0.02em;
+}
+
+.level-card.locked .level-num {
+  color: var(--text-faint);
+}
+
+.level-info {
+  flex: 1;
+}
+
+.level-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.level-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.level-status {
+  font-size: 24px;
+  min-width: 32px;
+  text-align: center;
+}
+
+.level-badge {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.badge-new {
+  background: var(--accent);
+  color: white;
+}
+
+.badge-done {
+  background: var(--green);
+  color: white;
+}
+
+.badge-locked {
+  background: var(--bg-soft);
+  color: var(--text-faint);
+}
+
+/* ===== PLAY SCREEN ===== */
+.play-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.btn-back {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  border-color: var(--border-bright);
+  background: var(--bg-soft);
+}
+
+.progress-bar {
+  flex: 1;
+  height: 12px;
+  background: var(--bg-card);
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--yellow) 100%);
+  border-radius: 100px;
+  transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 16px rgba(255, 107, 53, 0.4);
+}
+
+.question-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 28px 24px;
+  margin-bottom: 24px;
+}
+
+.question-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.question-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.25);
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.btn-hint {
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: var(--yellow);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.btn-hint:hover:not(:disabled) {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: var(--yellow);
+}
+
+.btn-hint:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.question-context {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  line-height: 1.5;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 8px 8px 0;
+}
+
+.question-context strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.question-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.code-block {
+  background: #051020;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 18px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.7;
+  overflow-x: auto;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.code-block::before {
+  content: '● ● ●';
+  display: block;
+  color: rgba(255, 255, 255, 0.15);
+  letter-spacing: 4px;
+  font-size: 10px;
+  margin-bottom: 10px;
+}
+
+.code-block pre {
+  font-family: inherit;
+  white-space: pre;
+  color: #CBD5E1;
+}
+
+.code-kw { color: #F472B6; font-weight: 500; }
+.code-str { color: #86EFAC; }
+.code-num { color: #FDBA74; }
+.code-cmt { color: #64748B; font-style: italic; }
+.code-fn { color: #93C5FD; }
+.code-var { color: #E2E8F0; }
+.code-op { color: #F472B6; }
+.code-highlight { background: rgba(239, 68, 68, 0.15); border-radius: 3px; padding: 0 3px; }
+
+.hint-box {
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--yellow);
+  line-height: 1.5;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hint-box strong {
+  font-weight: 700;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.option {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-family: inherit;
+  color: var(--text);
+  position: relative;
+  overflow: hidden;
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.option:disabled {
+  cursor: not-allowed;
+}
+
+.option-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.option-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.option-desc {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  line-height: 1.35;
+}
+
+.option.selected {
+  border-color: var(--accent);
+  background: rgba(255, 107, 53, 0.08);
+}
+
+.option.correct {
+  border-color: var(--green);
+  background: rgba(16, 185, 129, 0.12);
+  animation: pulseGreen 0.5s ease-out;
+}
+
+.option.wrong {
+  border-color: var(--red);
+  background: rgba(239, 68, 68, 0.12);
+  animation: shakeX 0.4s ease-out;
+}
+
+@keyframes pulseGreen {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.option .tick {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 16px;
+  opacity: 0;
+}
+
+.option.correct .tick {
+  opacity: 1;
+}
+
+/* ===== FEEDBACK ===== */
+.feedback {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: 20px;
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 100;
+}
+
+.feedback.correct {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, var(--bg-card) 100%);
+  border-top-color: var(--green);
+}
+
+.feedback.wrong {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, var(--bg-card) 100%);
+  border-top-color: var(--red);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.feedback-inner {
+  max-width: 740px;
+  margin: 0 auto;
+}
+
+.feedback-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.feedback-icon {
+  font-size: 28px;
+}
+
+.feedback-title {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.feedback.correct .feedback-title { color: var(--green); }
+.feedback.wrong .feedback-title { color: var(--red); }
+
+.feedback-explanation {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.feedback-explanation strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.feedback-explanation code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--accent);
+}
+
+.btn-continue {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: inherit;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+}
+
+.btn-continue:hover {
+  background: var(--accent-glow);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(255, 107, 53, 0.4);
+}
+
+.feedback.wrong .btn-continue {
+  background: var(--red);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+}
+
+.feedback.wrong .btn-continue:hover {
+  background: #DC2626;
+}
+
+/* ===== RESULT SCREEN ===== */
+.result {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.result-emoji {
+  font-size: 72px;
+  margin-bottom: 16px;
+  animation: bounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes bounce {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.result h2 {
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.result .subtitle {
+  font-size: 16px;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+}
+
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.result-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 12px;
+}
+
+.result-stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--yellow) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+
+.result-stat-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.btn-primary, .btn-secondary {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: inherit;
+  transition: all 0.2s;
+  margin-bottom: 10px;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--border-bright);
+}
+
+/* ===== GAME OVER ===== */
+.game-over {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.game-over .result-emoji {
+  filter: grayscale(0.3);
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 520px) {
+  .options { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 36px; }
+  .question-title { font-size: 17px; }
+  .code-block { font-size: 12px; padding: 14px 16px; }
+  .stat-item { font-size: 13px; }
+  .stat-item .icon { font-size: 16px; }
+  .logo-text { font-size: 15px; }
+  .logo-icon { width: 30px; height: 30px; font-size: 15px; }
+}
+
+/* ===== CONFETTI ===== */
+.confetti {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  top: -10px;
+  pointer-events: none;
+  animation: confettiFall linear forwards;
+  z-index: 1000;
+}
+
+@keyframes confettiFall {
+  to {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* ===== LOADING STATE ===== */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+/* ===== COMBO STREAK ===== */
+.streak-flash {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--yellow) 100%);
+  color: white;
+  padding: 20px 40px;
+  border-radius: 20px;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  z-index: 200;
+  box-shadow: 0 20px 60px rgba(255, 107, 53, 0.5);
+  pointer-events: none;
+}
+
+.streak-flash.show {
+  animation: streakPop 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes streakPop {
+  0% { transform: translate(-50%, -50%) scale(0) rotate(-10deg); }
+  20% { transform: translate(-50%, -50%) scale(1.1) rotate(5deg); }
+  40% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  80% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.8) rotate(0deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">✈️</div>
+      <div class="logo-text">Code<span>Hunter</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat-item">
+        <span class="icon">🔥</span>
+        <span id="streak">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="icon">💎</span>
+        <span id="xp">0</span>
+      </div>
+      <div class="stat-item lives" id="lives"></div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main id="content"></main>
+</div>
+
+<div class="streak-flash" id="streakFlash"></div>
+
+<script>
+// ============================================================
+// GAME DATA — Banks of exercises for each level
+// Each exercise has multiple variants for replayability
+// ============================================================
+
+const EXERCISES = {
+  // LEVEL 1 — BUGS básicos
+  1: [
+    {
+      context: "El consultor implementó la clasificación TITANIUM. El área comercial pidió: 'vuelos >= 40 <strong>O</strong> gasto >= $5.000.000'.",
+      title: "¿Qué tipo de problema tiene este código?",
+      code: `<span class="code-kw">if</span> total_vuelos <span class="code-op">>=</span> <span class="code-num">40</span> <span class="code-highlight"><span class="code-kw">and</span></span> gasto_total <span class="code-op">>=</span> <span class="code-num">5_000_000</span>:
+    categoria <span class="code-op">=</span> <span class="code-str">"TITANIUM"</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "Fíjate en el operador lógico. ¿Qué pidió el negocio y qué escribió el consultor?",
+      explanation: "<strong>BUG.</strong> El consultor usó <code>and</code> pero el negocio pidió <code>or</code>. Con <code>and</code>, un socio debe cumplir <strong>ambas</strong> condiciones. Luis Rojas con 42 vuelos y $3.500.000 quedaría como GOLD en lugar de TITANIUM."
+    },
+    {
+      context: "Código para comparar si el socio es Enterprise.",
+      title: "¿Qué problema tiene esta línea?",
+      code: `<span class="code-kw">if</span> cliente_plan <span class="code-highlight"><span class="code-op">=</span></span> <span class="code-str">"Enterprise"</span>:
+    categoria <span class="code-op">=</span> <span class="code-str">"VIP"</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "En Python, <code>=</code> y <code>==</code> hacen cosas muy distintas.",
+      explanation: "<strong>BUG.</strong> <code>=</code> asigna valores, <code>==</code> compara. Este código ni siquiera se ejecuta — Python arroja <code>SyntaxError</code>. Uno de los errores más clásicos del Certamen 1."
+    },
+    {
+      context: "Clasificación BLUE para cualquier socio activo.",
+      title: "¿Qué tipo de problema tiene?",
+      code: `<span class="code-cmt"># BLUE: cualquier socio activo</span>
+<span class="code-kw">elif</span> total_vuelos <span class="code-op">></span> <span class="code-num">0</span>:
+    categoria <span class="code-op">=</span> <span class="code-str">"BLUE"</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "El comentario dice 'socio activo'. ¿El código verifica eso realmente?",
+      explanation: "<strong>BUG.</strong> La condición debería verificar <code>es_socio_activo == True</code>, no si tiene vuelos. Un socio inactivo con historial de vuelos quedaría como BLUE y recibiría beneficios que no le corresponden."
+    },
+    {
+      context: "Contador de socios GOLD para reporte gerencial.",
+      title: "¿Qué problema tiene este contador?",
+      code: `gold_count <span class="code-op">=</span> <span class="code-num">0</span>
+<span class="code-kw">for</span> r <span class="code-kw">in</span> reporte:
+    <span class="code-kw">if</span> r[<span class="code-str">"categoria"</span>] <span class="code-op">==</span> <span class="code-str"><span class="code-highlight">"gold"</span></span>:
+        gold_count <span class="code-op">+=</span> <span class="code-num">1</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "Las categorías se guardan en un formato específico. ¿Coincide?",
+      explanation: "<strong>BUG.</strong> Los strings en Python son <em>case-sensitive</em>. Las categorías se guardan como <code>\"GOLD\"</code> en mayúsculas, pero el contador busca <code>\"gold\"</code>. El resultado siempre será 0, aunque haya decenas de socios GOLD."
+    },
+    {
+      context: "Filtro para campaña de retención de socios valiosos.",
+      title: "¿Qué error tiene esta condición?",
+      code: `<span class="code-kw">for</span> r <span class="code-kw">in</span> reporte:
+    <span class="code-kw">if</span> r[<span class="code-str">"categoria"</span>] <span class="code-op">==</span> <span class="code-str">"TITANIUM"</span> <span class="code-kw">or</span> <span class="code-highlight"><span class="code-str">"GOLD"</span></span>:
+        socios_valiosos.append(r[<span class="code-str">"nombre"</span>])`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "Python no lee la intención, lee lo que está escrito. <code>or \"GOLD\"</code> ¿qué significa realmente para Python?",
+      explanation: "<strong>BUG.</strong> <code>or \"GOLD\"</code> evalúa si el string \"GOLD\" es truthy — y una cadena no vacía siempre es <code>True</code>. La condición es siempre verdadera. <strong>Todos</strong> los socios terminan en la lista de valiosos."
+    },
+    {
+      context: "Cálculo de millas acumuladas. Regla de negocio: 1 milla por cada $1.000 gastados.",
+      title: "¿Qué problema tiene este cálculo?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">calcular_millas</span>(gasto, multiplicador):
+    millas_base <span class="code-op">=</span> gasto <span class="code-highlight"><span class="code-op">/</span></span> <span class="code-num">1000</span>
+    <span class="code-kw">return</span> millas_base <span class="code-op">*</span> multiplicador`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "Las millas son unidades enteras. ¿Qué tipo de número devuelve la división <code>/</code>?",
+      explanation: "<strong>BUG.</strong> La división <code>/</code> devuelve float (1800.0) cuando debería ser entero (1800). Las millas son unidades indivisibles — la regla dice '1 milla por cada $1.000 <em>completos</em>'. Debe ser <code>//</code>."
+    }
+  ],
+
+  // LEVEL 2 — MAL OLOR
+  2: [
+    {
+      context: "Inicio de la función de clasificación del consultor.",
+      title: "¿Qué tipo de problema tiene este código?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">clasificar_socio</span>(s):
+    v <span class="code-op">=</span> s[<span class="code-str">"vuelos"</span>]
+    g <span class="code-op">=</span> s[<span class="code-str">"gasto"</span>]
+    a <span class="code-op">=</span> s[<span class="code-str">"activo"</span>]
+    
+    <span class="code-kw">if</span> v <span class="code-op">>=</span> <span class="code-num">40</span> <span class="code-kw">or</span> g <span class="code-op">>=</span> <span class="code-num">5000000</span>:
+        c <span class="code-op">=</span> <span class="code-str">"TITANIUM"</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 1,
+      hint: "El código funciona técnicamente. ¿Pero qué tan fácil es leerlo en 6 meses?",
+      explanation: "<strong>MAL OLOR.</strong> Nombres de una sola letra (v, g, a, c) sin significado. El código ejecuta correctamente, pero nadie entiende qué hace sin memorizar qué representa cada variable. La clase 7 lo llamó 'el mal olor invisible'."
+    },
+    {
+      context: "Iteración sobre la lista de socios en el reporte consolidado.",
+      title: "¿Qué problema tiene este loop?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">generar_reporte</span>(socios):
+    <span class="code-kw">for</span> i <span class="code-kw">in</span> <span class="code-fn">range</span>(<span class="code-num">0</span>, <span class="code-highlight"><span class="code-num">9</span></span>):
+        s <span class="code-op">=</span> socios[i]
+        clasificar(s)`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 1,
+      hint: "¿Qué pasa si mañana el equipo agrega un socio nuevo a la lista?",
+      explanation: "<strong>MAL OLOR.</strong> El número 9 está hardcodeado. Si la lista crece, se pierden socios; si decrece, crashea con <code>IndexError</code>. Lo correcto: <code>for s in socios:</code> que funciona sin importar el tamaño."
+    },
+    {
+      context: "Umbrales de descuento embebidos directamente en el código.",
+      title: "¿Qué problema tiene este código?",
+      code: `<span class="code-kw">if</span> gasto_anual <span class="code-op">></span> <span class="code-highlight"><span class="code-num">1000000</span></span>:
+    descuento <span class="code-op">=</span> <span class="code-num">0.15</span>
+<span class="code-kw">elif</span> gasto_anual <span class="code-op">></span> <span class="code-highlight"><span class="code-num">500000</span></span>:
+    descuento <span class="code-op">=</span> <span class="code-num">0.10</span>
+<span class="code-kw">else</span>:
+    descuento <span class="code-op">=</span> <span class="code-num">0.05</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 1,
+      hint: "Si el gerente comercial cambia los umbrales mañana, ¿qué hay que tocar?",
+      explanation: "<strong>MAL OLOR.</strong> Números mágicos sin contexto. Si el gerente cambia el umbral Premium a $900.000, hay que buscar el <code>1000000</code> entre miles de líneas. Lo correcto: definir <code>UMBRAL_PREMIUM = 1_000_000</code> al inicio y usar el nombre."
+    },
+    {
+      context: "Reporte del socio con variables abreviadas.",
+      title: "¿Qué tipo de problema tiene?",
+      code: `<span class="code-fn">print</span>(<span class="code-str">f"Socio: {n}"</span>)
+<span class="code-fn">print</span>(<span class="code-str">f"Cat: {c} | Mult: x{m}"</span>)
+<span class="code-fn">print</span>(<span class="code-str">f"Ben: {b}"</span>)`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 1,
+      hint: "¿Qué significan n, c, m, b? ¿Podrías mantener este código en 6 meses?",
+      explanation: "<strong>MAL OLOR.</strong> Variables de una letra sin contexto. Aunque el código funciona, cualquier desarrollador nuevo tiene que memorizar qué es cada letra. Lo correcto: <code>nombre</code>, <code>categoria</code>, <code>multiplicador</code>, <code>beneficio</code>."
+    },
+    {
+      context: "Manejo de errores en la función de degradación.",
+      title: "¿Qué problema tiene este try/except?",
+      code: `<span class="code-kw">try</span>:
+    alerta <span class="code-op">=</span> <span class="code-fn">alerta_degradacion</span>(s, cat)
+<span class="code-kw">except</span>:
+    alerta <span class="code-op">=</span> <span class="code-str">"N/A"</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 1,
+      hint: "¿Qué errores está silenciando este except? ¿Cómo te enteras si algo falla?",
+      explanation: "<strong>MAL OLOR.</strong> Un <code>except:</code> vacío atrapa TODOS los errores silenciosamente. Bugs nuevos pasan invisibles a producción. Lo correcto: capturar excepciones específicas (<code>except NameError</code>) o arreglar la función en vez de ocultar el síntoma."
+    },
+    {
+      context: "Función con docstring pero sin comentarios significativos.",
+      title: "¿Qué tipo de problema tiene?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">calcular</span>(x):
+    y <span class="code-op">=</span> x <span class="code-op">*</span> <span class="code-num">0.15</span>
+    z <span class="code-op">=</span> x <span class="code-op">-</span> y
+    <span class="code-kw">return</span> z`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 1,
+      hint: "¿Qué calcula esta función? ¿Es descuento? ¿Impuesto? ¿Propina?",
+      explanation: "<strong>MAL OLOR.</strong> La función se llama <code>calcular</code> (¿calcular qué?), recibe <code>x</code>, usa <code>0.15</code> (¿por qué?) y devuelve <code>z</code>. Imposible saber su propósito sin ejecutarla. Nombres descriptivos: <code>aplicar_descuento(precio)</code> con constante <code>DESCUENTO_PREMIUM = 0.15</code>."
+    }
+  ],
+
+  // LEVEL 3 — DEUDA TÉCNICA
+  3: [
+    {
+      context: "Comentario dentro de la función de clasificación principal, ya en producción.",
+      title: "¿Qué tipo de problema representa este código?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">clasificar_socio</span>(s):
+    <span class="code-cmt"># clasifica socio segun reglas V1</span>
+    <span class="code-cmt"># TODO: revisar despues si hay que agregar platinum</span>
+    
+    v <span class="code-op">=</span> s[<span class="code-str">"vuelos"</span>]
+    <span class="code-cmt"># ... resto del código</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 2,
+      hint: "El código funciona hoy. Pero alguien tomó una decisión que se va a cobrar después.",
+      explanation: "<strong>DEUDA TÉCNICA.</strong> Un TODO documentado en código de producción es deuda viva. Cuando el área comercial agregue PLATINUM mañana, alguien debe encontrar este comentario, entender el contexto y modificar código que ya está corriendo. Decisión rápida hoy, costo alto después."
+    },
+    {
+      context: "Motor de clasificación con lógica condicional extendida.",
+      title: "¿Qué problema tiene este diseño?",
+      code: `<span class="code-kw">if</span> gasto <span class="code-op">></span> <span class="code-num">5000000</span>: categoria <span class="code-op">=</span> <span class="code-str">"TITANIUM"</span>
+<span class="code-kw">elif</span> gasto <span class="code-op">></span> <span class="code-num">2000000</span>: categoria <span class="code-op">=</span> <span class="code-str">"GOLD"</span>
+<span class="code-kw">elif</span> gasto <span class="code-op">></span> <span class="code-num">800000</span>: categoria <span class="code-op">=</span> <span class="code-str">"SILVER"</span>
+<span class="code-cmt"># Los umbrales están dispersos en 5 archivos distintos</span>
+<span class="code-cmt"># Para cambiarlos hay que tocar: motor.py, reporte.py, </span>
+<span class="code-cmt"># alerta.py, dashboard.py, email_template.py</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 2,
+      hint: "El código funciona. Pero cambiar un umbral requiere tocar 5 archivos. ¿Qué te dice eso?",
+      explanation: "<strong>DEUDA TÉCNICA.</strong> Cuando cambiar una regla de negocio simple requiere modificar múltiples archivos, hay deuda arquitectónica. El equipo eligió la solución rápida (copiar los valores) en lugar de la correcta (centralizar en configuración). Cada cambio futuro paga intereses."
+    },
+    {
+      context: "El equipo está entregando a tiempo gracias a estos 'atajos'.",
+      title: "¿Qué tipo de problema es?",
+      code: `<span class="code-cmt"># HACK temporal para demo del viernes</span>
+<span class="code-cmt"># Luego hay que refactorizar toda la sección</span>
+<span class="code-kw">if</span> cliente_id <span class="code-op">==</span> <span class="code-num">1847</span>:
+    <span class="code-cmt"># Cliente VIP especial, lo metemos a mano</span>
+    categoria <span class="code-op">=</span> <span class="code-str">"TITANIUM"</span>
+    descuento <span class="code-op">=</span> <span class="code-num">0.25</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 2,
+      hint: "¿Cuántos 'HACKs temporales' de hace 2 años siguen corriendo en producción?",
+      explanation: "<strong>DEUDA TÉCNICA.</strong> Hardcodear excepciones 'por ahora' es el ejemplo clásico de Ward Cunningham: crédito técnico con intereses acumulativos. El próximo cliente VIP requerirá otro hack, y otro, hasta que el código sea inmantenible."
+    },
+    {
+      context: "Sistema de logs de la aplicación.",
+      title: "¿Qué tipo de problema es esto?",
+      code: `<span class="code-cmt"># FIXME: los logs se guardan en un TXT desde 2022</span>
+<span class="code-cmt"># Sabíamos que había que migrar a un sistema formal</span>
+<span class="code-cmt"># pero el archivo ya pesa 12GB y nadie sabe cómo</span>
+<span class="code-cmt"># parsearlo cuando hay un incidente</span>
+
+<span class="code-kw">def</span> <span class="code-fn">log</span>(mensaje):
+    <span class="code-kw">with</span> <span class="code-fn">open</span>(<span class="code-str">"logs.txt"</span>, <span class="code-str">"a"</span>) <span class="code-kw">as</span> f:
+        f.write(mensaje <span class="code-op">+</span> <span class="code-str">"\\n"</span>)`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 2,
+      hint: "Hubo una decisión hace años. Hoy se está pagando con intereses.",
+      explanation: "<strong>DEUDA TÉCNICA.</strong> El 'por ahora lo dejamos así' de hace 2 años hoy bloquea la capacidad de diagnosticar incidentes. Los intereses de esa deuda se pagan cada vez que hay un problema en producción y nadie puede investigarlo eficientemente."
+    },
+    {
+      context: "Sistema de cálculo de comisiones comerciales.",
+      title: "¿Qué problema tiene?",
+      code: `<span class="code-cmt"># Reglas de comisión copiadas de Excel a código</span>
+<span class="code-cmt"># Si RRHH cambia las tablas, hay que pedirle a TI</span>
+<span class="code-cmt"># que modifique el código y haga un deploy</span>
+
+COMISION_JUNIOR <span class="code-op">=</span> <span class="code-num">0.02</span>
+COMISION_SENIOR <span class="code-op">=</span> <span class="code-num">0.035</span>
+COMISION_LEAD <span class="code-op">=</span> <span class="code-num">0.05</span>
+<span class="code-cmt"># ... 47 líneas más de constantes</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 2,
+      hint: "Si RRHH necesita cambiar una comisión, ¿puede hacerlo solo? ¿O depende de TI?",
+      explanation: "<strong>DEUDA TÉCNICA.</strong> Las reglas de negocio deberían vivir en un sistema configurable (base de datos, archivo de configuración) para que el área de negocio las modifique sin depender de TI. La clase 5 lo llamó 'configura, no programes'. Cada cambio hoy cuesta tiempo de desarrolladores."
+    },
+    {
+      context: "Código del motor de clasificación CTC con integración externa.",
+      title: "¿Qué problema tiene esta integración?",
+      code: `<span class="code-cmt"># Integración con CRM legacy</span>
+<span class="code-cmt"># El CRM solo devuelve strings en español con acentos</span>
+<span class="code-cmt"># Nuestro sistema usa IDs numéricos</span>
+<span class="code-cmt"># Por ahora mapeamos a mano cada vez que agregan un plan nuevo</span>
+
+<span class="code-kw">if</span> plan_crm <span class="code-op">==</span> <span class="code-str">"Básico"</span>: plan_id <span class="code-op">=</span> <span class="code-num">1</span>
+<span class="code-kw">elif</span> plan_crm <span class="code-op">==</span> <span class="code-str">"Premium"</span>: plan_id <span class="code-op">=</span> <span class="code-num">2</span>
+<span class="code-kw">elif</span> plan_crm <span class="code-op">==</span> <span class="code-str">"Básico Plus"</span>: plan_id <span class="code-op">=</span> <span class="code-num">3</span>
+<span class="code-cmt"># ... y así hasta 47 planes</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 2,
+      hint: "Cada vez que el CRM agrega un plan, ¿quién actualiza este código?",
+      explanation: "<strong>DEUDA TÉCNICA.</strong> El sistema depende de una convención frágil (mapeo manual) en lugar de una integración robusta (tabla de mapeo en BD, API del CRM). Cada plan nuevo exige un deploy. La decisión inicial 'quick fix' se cobra en cada cambio."
+    }
+  ],
+
+  // LEVEL 4 — MIXTO (combina los 3 tipos + "todo correcto")
+  4: [
+    {
+      context: "Función de alerta de degradación del motor EasyFly.",
+      title: "¿Qué tipo de problema tiene?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">alerta_degradacion</span>(socio, categoria):
+    v <span class="code-op">=</span> socio[<span class="code-str">"vuelos"</span>]
+    
+    <span class="code-kw">if</span> categoria <span class="code-op">==</span> <span class="code-str">"TITANIUM"</span>:
+        faltan <span class="code-op">=</span> <span class="code-num">40</span> <span class="code-op">-</span> v
+    <span class="code-kw">if</span> categoria <span class="code-op">==</span> <span class="code-str">"GOLD"</span>:
+        faltan <span class="code-op">=</span> <span class="code-num">20</span> <span class="code-op">-</span> v
+    <span class="code-kw">if</span> categoria <span class="code-op">==</span> <span class="code-str">"SILVER"</span>:
+        faltan <span class="code-op">=</span> <span class="code-num">8</span> <span class="code-op">-</span> v
+    
+    <span class="code-kw">if</span> faltan <span class="code-op"><=</span> <span class="code-num">3</span>:
+        <span class="code-kw">return</span> <span class="code-str">"EN RIESGO"</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "¿Qué pasa si el socio es BLUE? ¿Se define <code>faltan</code> en ese caso?",
+      explanation: "<strong>BUG.</strong> Los tres son <code>if</code> separados (no <code>elif</code>). Si la categoría es BLUE o No clasificado, <code>faltan</code> nunca se define y el código crashea con <code>NameError</code>. Por eso el consultor puso el <code>try/except</code> vacío — para esconder su propio bug."
+    },
+    {
+      context: "Clasificación de socios EasyFly en función bien estructurada.",
+      title: "¿Este código tiene algún problema?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">clasificar_socio</span>(socio):
+    total_vuelos <span class="code-op">=</span> socio[<span class="code-str">"vuelos"</span>]
+    gasto_total <span class="code-op">=</span> socio[<span class="code-str">"gasto"</span>]
+    es_activo <span class="code-op">=</span> socio[<span class="code-str">"activo"</span>]
+    
+    <span class="code-kw">if</span> <span class="code-kw">not</span> es_activo:
+        <span class="code-kw">return</span> <span class="code-str">"No clasificado"</span>, <span class="code-num">0</span>
+    <span class="code-kw">elif</span> total_vuelos <span class="code-op">>=</span> <span class="code-num">40</span> <span class="code-kw">or</span> gasto_total <span class="code-op">>=</span> <span class="code-num">5_000_000</span>:
+        <span class="code-kw">return</span> <span class="code-str">"TITANIUM"</span>, <span class="code-num">3.0</span>
+    <span class="code-kw">elif</span> total_vuelos <span class="code-op">>=</span> <span class="code-num">20</span> <span class="code-kw">or</span> gasto_total <span class="code-op">>=</span> <span class="code-num">2_000_000</span>:
+        <span class="code-kw">return</span> <span class="code-str">"GOLD"</span>, <span class="code-num">2.0</span>
+    <span class="code-kw">else</span>:
+        <span class="code-kw">return</span> <span class="code-str">"BLUE"</span>, <span class="code-num">1.0</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 3,
+      hint: "Nombres descriptivos, operador <code>or</code>, verifica inactividad primero, orden correcto de condiciones.",
+      explanation: "<strong>TODO CORRECTO.</strong> Este código hace todo bien: nombres descriptivos, verifica actividad primero, usa <code>or</code>, orden de mayor a menor restricción, <code>else</code> como default. Es el patrón canónico enseñado en las clases 5 y 6."
+    },
+    {
+      context: "Cálculo de millas con formato específico para el reporte.",
+      title: "¿Qué tipo de problema tiene?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">bonus</span>(m, c):
+    <span class="code-kw">if</span> c <span class="code-op">==</span> <span class="code-str">"T"</span>: <span class="code-kw">return</span> m <span class="code-op">*</span> <span class="code-num">3</span>
+    <span class="code-kw">if</span> c <span class="code-op">==</span> <span class="code-str">"G"</span>: <span class="code-kw">return</span> m <span class="code-op">*</span> <span class="code-num">2</span>
+    <span class="code-kw">if</span> c <span class="code-op">==</span> <span class="code-str">"S"</span>: <span class="code-kw">return</span> m <span class="code-op">*</span> <span class="code-num">1.5</span>
+    <span class="code-kw">return</span> m`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 1,
+      hint: "Todo funciona. Pero ¿se entiende qué hace sin ejecutarlo?",
+      explanation: "<strong>MAL OLOR.</strong> Nombres crípticos: <code>bonus</code>, <code>m</code>, <code>c</code>, <code>\"T\"</code>, <code>\"G\"</code>, <code>\"S\"</code>. El código ejecuta, pero nadie entiende qué calcula sin investigar. Lo correcto: nombres completos y constantes para las categorías."
+    },
+    {
+      context: "Sistema de notificaciones por email del Club EasyFly.",
+      title: "¿Qué problema tiene?",
+      code: `<span class="code-cmt"># Notas del equipo:</span>
+<span class="code-cmt"># - El template está en HTML embebido en strings</span>
+<span class="code-cmt"># - Marketing no puede modificarlo sin pedir deploy a TI</span>
+<span class="code-cmt"># - Ya son 47 versiones del mismo email</span>
+<span class="code-cmt"># - Cada campaña nueva es un PR nuevo</span>
+
+TEMPLATE <span class="code-op">=</span> <span class="code-str">"""&lt;html&gt;&lt;body&gt;...&lt;/body&gt;&lt;/html&gt;"""</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 2,
+      hint: "El sistema funciona hoy. ¿Pero qué cuesta hacer cambios?",
+      explanation: "<strong>DEUDA TÉCNICA.</strong> Los templates deberían estar en un CMS que Marketing pueda editar. Cada cambio hoy requiere desarrollador + deploy. La decisión inicial 'lo hardcodeamos por ahora' se cobra en cada campaña. Es exactamente la deuda de Cunningham."
+    },
+    {
+      context: "Reporte final con sintaxis de comparación.",
+      title: "¿Qué error tiene?",
+      code: `<span class="code-kw">if</span> prioridad <span class="code-op">==</span> <span class="code-str">"P1"</span> <span class="code-kw">or</span> <span class="code-str">"P2"</span>:
+    <span class="code-fn">enviar_alerta</span>(ticket)
+    escalar_a_supervisor <span class="code-op">=</span> <span class="code-kw">True</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "Ya viste este patrón en nivel 1. Python lee <code>or \"P2\"</code> de forma muy particular.",
+      explanation: "<strong>BUG.</strong> <code>or \"P2\"</code> siempre es True porque \"P2\" es una cadena no vacía. La condición completa siempre es verdadera. <strong>Todos</strong> los tickets reciben alerta y escalamiento, incluso los P3 y P4. Debe ser: <code>prioridad == \"P1\" or prioridad == \"P2\"</code>."
+    },
+    {
+      context: "Función para procesar lista de clientes con estructura clara.",
+      title: "¿Este código está correcto?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">procesar_clientes</span>(clientes):
+    resultados <span class="code-op">=</span> []
+    <span class="code-kw">for</span> cliente <span class="code-kw">in</span> clientes:
+        categoria, descuento <span class="code-op">=</span> <span class="code-fn">clasificar</span>(cliente)
+        ahorro <span class="code-op">=</span> cliente[<span class="code-str">"gasto"</span>] <span class="code-op">*</span> descuento
+        resultados.append({
+            <span class="code-str">"nombre"</span>: cliente[<span class="code-str">"nombre"</span>],
+            <span class="code-str">"categoria"</span>: categoria,
+            <span class="code-str">"ahorro"</span>: ahorro
+        })
+    <span class="code-kw">return</span> resultados`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 3,
+      hint: "Nombres claros, estructura limpia, itera sobre la colección directamente.",
+      explanation: "<strong>TODO CORRECTO.</strong> Nombres descriptivos, itera con <code>for cliente in clientes</code> (no con índices hardcodeados), estructura limpia, responsabilidad única. Ejemplo de código mantenible y legible."
+    },
+    {
+      context: "Código que pasó a producción hace 6 meses.",
+      title: "¿Qué problema tiene?",
+      code: `<span class="code-cmt"># HACK: cliente 5847 necesita 30% en vez de 20%</span>
+<span class="code-cmt"># TODO: mover esto a una tabla de excepciones en DB</span>
+<span class="code-kw">if</span> cliente_id <span class="code-op">==</span> <span class="code-num">5847</span>:
+    descuento <span class="code-op">=</span> <span class="code-num">0.30</span>
+<span class="code-kw">elif</span> cliente_id <span class="code-op">==</span> <span class="code-num">9123</span>:  <span class="code-cmt"># Y este también</span>
+    descuento <span class="code-op">=</span> <span class="code-num">0.35</span>
+<span class="code-kw">elif</span> cliente_id <span class="code-op">==</span> <span class="code-num">4521</span>:  <span class="code-cmt"># Y este</span>
+    descuento <span class="code-op">=</span> <span class="code-num">0.28</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 2,
+      hint: "Los comentarios cuentan la historia. ¿Qué pasó con el 'TODO' de hace 6 meses?",
+      explanation: "<strong>DEUDA TÉCNICA.</strong> El HACK temporal se convirtió en 3 HACKs permanentes. Nunca se movió a una tabla. Cada cliente VIP nuevo agregará otro <code>elif</code>. El código se vuelve inmantenible exponencialmente. Deuda que se cobró."
+    }
+  ],
+
+  // LEVEL 5 — EASYFLY v2 (el caso real del notebook del consultor)
+  5: [
+    {
+      context: "Primera línea del motor EasyFly v2 entregado por el consultor. El negocio pidió 'vuelos <strong>O</strong> gasto' para todas las categorías.",
+      title: "¿Qué tipo de problema tiene?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">clasificar_socio</span>(s):
+    v <span class="code-op">=</span> s[<span class="code-str">"vuelos"</span>]
+    g <span class="code-op">=</span> s[<span class="code-str">"gasto"</span>]
+    a <span class="code-op">=</span> s[<span class="code-str">"activo"</span>]
+    
+    <span class="code-kw">if</span> v <span class="code-op">>=</span> <span class="code-num">40</span> <span class="code-highlight"><span class="code-kw">and</span></span> g <span class="code-op">>=</span> <span class="code-num">5000000</span>:
+        c <span class="code-op">=</span> <span class="code-str">"TITANIUM"</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "El más grave del notebook EasyFly v2. Afecta la clasificación de socios VIP.",
+      explanation: "<strong>BUG CRÍTICO.</strong> El consultor usó <code>and</code> donde el negocio pidió <code>or</code>. Un socio con 45 vuelos y $4M queda como GOLD, no TITANIUM. Impacto: 38 socios VIP mal clasificados, pierden acceso VIP y acumulan millas x2.0 en vez de x3.0."
+    },
+    {
+      context: "Comentario del consultor en el motor principal.",
+      title: "¿Qué representa este comentario en código de producción?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">clasificar_socio</span>(s):
+    <span class="code-cmt"># clasifica socio segun reglas V1</span>
+    <span class="code-highlight"><span class="code-cmt"># TODO: revisar despues si hay que agregar platinum</span></span>
+    
+    v <span class="code-op">=</span> s[<span class="code-str">"vuelos"</span>]`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 2,
+      hint: "Funciona hoy. El problema es lo que se tomó como decisión pendiente.",
+      explanation: "<strong>DEUDA TÉCNICA.</strong> Un TODO visible en código de producción es deuda viva. Cuando Comercial pida PLATINUM, alguien debe arqueologar el código, entender el contexto del consultor (que ya no está) y modificar un sistema en uso. Clásico de Cunningham."
+    },
+    {
+      context: "La función alerta_degradacion del consultor.",
+      title: "¿Qué problema tiene esta estructura?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">alerta_degradacion</span>(socio, categoria):
+    v <span class="code-op">=</span> socio[<span class="code-str">"vuelos"</span>]
+    
+    <span class="code-highlight"><span class="code-kw">if</span></span> categoria <span class="code-op">==</span> <span class="code-str">"TITANIUM"</span>: faltan <span class="code-op">=</span> <span class="code-num">40</span> <span class="code-op">-</span> v
+    <span class="code-highlight"><span class="code-kw">if</span></span> categoria <span class="code-op">==</span> <span class="code-str">"GOLD"</span>:     faltan <span class="code-op">=</span> <span class="code-num">20</span> <span class="code-op">-</span> v
+    <span class="code-highlight"><span class="code-kw">if</span></span> categoria <span class="code-op">==</span> <span class="code-str">"SILVER"</span>:   faltan <span class="code-op">=</span> <span class="code-num">8</span>  <span class="code-op">-</span> v
+    
+    <span class="code-kw">if</span> faltan <span class="code-op"><=</span> <span class="code-num">3</span>:
+        <span class="code-kw">return</span> <span class="code-str">"EN RIESGO"</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "Tres <code>if</code> independientes. ¿Y si el socio es BLUE? ¿Qué vale <code>faltan</code>?",
+      explanation: "<strong>BUG.</strong> Tres <code>if</code> separados en lugar de <code>if/elif</code>. Si la categoría es BLUE o No clasificado, <code>faltan</code> nunca se define → <code>NameError</code>. Por eso el consultor puso <code>try/except</code> vacío: para esconder su propio bug."
+    },
+    {
+      context: "Manejo de errores dentro del reporte consolidado.",
+      title: "¿Qué tipo de problema es este except?",
+      code: `<span class="code-kw">for</span> i <span class="code-kw">in</span> <span class="code-fn">range</span>(<span class="code-num">0</span>, <span class="code-num">9</span>):
+    s <span class="code-op">=</span> socios[i]
+    cat, mult, ben <span class="code-op">=</span> <span class="code-fn">clasificar_socio</span>(s)
+    
+    <span class="code-cmt"># El try/except es por si falla la alerta, </span>
+    <span class="code-cmt"># el consultor lo dejo asi</span>
+    <span class="code-kw">try</span>:
+        alerta <span class="code-op">=</span> <span class="code-fn">alerta_degradacion</span>(s, cat)
+    <span class="code-highlight"><span class="code-kw">except</span>:</span>
+        alerta <span class="code-op">=</span> <span class="code-str">"N/A"</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 1,
+      hint: "Técnicamente el código funciona. Pero está escondiendo algo importante.",
+      explanation: "<strong>MAL OLOR.</strong> <code>except:</code> vacío silencia TODOS los errores. Está ocultando el bug del <code>NameError</code> en lugar de arreglarlo. Cuando aparezca un nuevo bug, también se silenciará. Producción sin visibilidad de errores."
+    },
+    {
+      context: "Consulta del área comercial: cantidad de socios GOLD.",
+      title: "¿Qué error tiene?",
+      code: `gold_count <span class="code-op">=</span> <span class="code-num">0</span>
+<span class="code-kw">for</span> r <span class="code-kw">in</span> reporte:
+    <span class="code-kw">if</span> r[<span class="code-str">"categoria"</span>] <span class="code-op">==</span> <span class="code-highlight"><span class="code-str">"gold"</span></span>:
+        gold_count <span class="code-op">+=</span> <span class="code-num">1</span>
+<span class="code-fn">print</span>(<span class="code-str">f"Total socios Gold: {gold_count}"</span>)`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "Las categorías se guardan en mayúsculas. ¿Con qué las está comparando?",
+      explanation: "<strong>BUG.</strong> Los strings son case-sensitive. Las categorías son <code>\"GOLD\"</code> (mayúsculas), el contador busca <code>\"gold\"</code>. Siempre devuelve 0. El gerente recibe un reporte incorrecto — piensa que no hay socios GOLD."
+    },
+    {
+      context: "Lista de socios valiosos para campaña de retención.",
+      title: "¿Qué tipo de problema tiene?",
+      code: `socios_valiosos <span class="code-op">=</span> []
+<span class="code-kw">for</span> r <span class="code-kw">in</span> reporte:
+    <span class="code-kw">if</span> r[<span class="code-str">"categoria"</span>] <span class="code-op">==</span> <span class="code-str">"TITANIUM"</span> <span class="code-highlight"><span class="code-kw">or</span> <span class="code-str">"GOLD"</span></span>:
+        socios_valiosos.append(r[<span class="code-str">"nombre"</span>])
+<span class="code-fn">print</span>(<span class="code-str">f"Socios valiosos: {socios_valiosos}"</span>)`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "Python evalúa <code>or \"GOLD\"</code> de forma literal. Un string no vacío siempre es...",
+      explanation: "<strong>BUG.</strong> <code>or \"GOLD\"</code> se evalúa como <code>or True</code>. La condición completa siempre es verdadera. Todos los socios (hasta los inactivos) terminan en la campaña de retención. El área comercial envía emails a miles de personas equivocadas."
+    },
+    {
+      context: "Loop que procesa los socios en el reporte consolidado.",
+      title: "¿Qué problema tiene este loop?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">generar_reporte</span>(socios):
+    resultados <span class="code-op">=</span> []
+    
+    <span class="code-kw">for</span> i <span class="code-kw">in</span> <span class="code-fn">range</span>(<span class="code-num">0</span>, <span class="code-highlight"><span class="code-num">9</span></span>):
+        s <span class="code-op">=</span> socios[i]
+        <span class="code-cmt"># ... procesa el socio</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 1,
+      hint: "Funciona hoy. ¿Qué pasa si mañana el equipo agrega un décimo socio?",
+      explanation: "<strong>MAL OLOR.</strong> El número 9 está hardcodeado. Si la lista crece, ignora los nuevos socios silenciosamente. Si decrece, crashea con <code>IndexError</code>. Lo idiomático: <code>for s in socios:</code> que funciona con cualquier tamaño."
+    },
+    {
+      context: "Promedio de millas calculado sobre todos los registros del reporte.",
+      title: "¿Este código está bien?",
+      code: `<span class="code-cmt"># 5.2 - Promedio de millas de los socios activos</span>
+suma <span class="code-op">=</span> <span class="code-num">0</span>
+<span class="code-kw">for</span> r <span class="code-kw">in</span> reporte:
+    suma <span class="code-op">+=</span> r[<span class="code-str">"millas"</span>]
+
+promedio <span class="code-op">=</span> suma <span class="code-op">/</span> <span class="code-fn">len</span>(reporte)
+<span class="code-fn">print</span>(<span class="code-str">f"Promedio de millas: {promedio}"</span>)`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 0,
+      hint: "Lee el comentario. ¿Filtra realmente a los activos?",
+      explanation: "<strong>BUG.</strong> El comentario promete 'socios activos', pero el código itera sobre TODOS los socios del reporte (incluidos inactivos con 0 millas). Eso distorsiona el promedio hacia abajo. Faltaría un filtro: <code>if r[\"activo\"]:</code>."
+    },
+    {
+      context: "Variables del motor de clasificación dentro de la función.",
+      title: "¿Qué problema tiene?",
+      code: `<span class="code-kw">def</span> <span class="code-fn">clasificar_socio</span>(s):
+    <span class="code-highlight">v</span> <span class="code-op">=</span> s[<span class="code-str">"vuelos"</span>]
+    <span class="code-highlight">g</span> <span class="code-op">=</span> s[<span class="code-str">"gasto"</span>]
+    <span class="code-highlight">a</span> <span class="code-op">=</span> s[<span class="code-str">"activo"</span>]
+    
+    <span class="code-kw">if</span> v <span class="code-op">>=</span> <span class="code-num">40</span> <span class="code-kw">or</span> g <span class="code-op">>=</span> <span class="code-num">5000000</span>:
+        <span class="code-highlight">c</span> <span class="code-op">=</span> <span class="code-str">"TITANIUM"</span>
+        <span class="code-highlight">m</span> <span class="code-op">=</span> <span class="code-num">3.0</span>
+        <span class="code-highlight">b</span> <span class="code-op">=</span> <span class="code-str">"Acceso VIP"</span>`,
+      options: ["BUG", "MAL OLOR", "DEUDA TÉCNICA", "TODO CORRECTO"],
+      correct: 1,
+      hint: "El código funciona, pero... ¿qué significa cada letra?",
+      explanation: "<strong>MAL OLOR.</strong> Variables de una letra (v, g, a, c, m, b) que requieren memorización. Es exactamente 'el mal olor invisible' de la clase 7. Lo correcto: <code>total_vuelos</code>, <code>gasto_total</code>, <code>es_activo</code>, <code>categoria</code>, <code>multiplicador</code>, <code>beneficio</code>."
+    }
+  ]
+};
+
+// ============================================================
+// GAME STATE
+// ============================================================
+
+const LEVEL_INFO = {
+  1: { title: "BUGS Básicos", desc: "Errores que rompen la lógica", icon: "🐛" },
+  2: { title: "Malos Olores", desc: "Código que funciona pero apesta", icon: "👃" },
+  3: { title: "Deuda Técnica", desc: "El costo de los atajos", icon: "💸" },
+  4: { title: "Nivel Mixto", desc: "Los 3 tipos + trampa", icon: "🎯" },
+  5: { title: "EasyFly v2", desc: "El notebook del consultor", icon: "✈️" }
+};
+
+const EXERCISES_PER_LEVEL = 5;
+
+let state = {
+  screen: 'home',
+  level: null,
+  xp: 0,
+  lives: 3,
+  streak: 0,
+  currentExercise: null,
+  currentIndex: 0,
+  exerciseQueue: [],
+  levelStats: { correct: 0, wrong: 0, hintsUsed: 0 },
+  hintUsed: false,
+  completed: {},
+  locked: false
+};
+
+// ============================================================
+// STORAGE — persistence across sessions
+// ============================================================
+
+async function loadProgress() {
+  try {
+    const r = await window.storage.get('codehunter-progress');
+    if (r) {
+      const saved = JSON.parse(r.value);
+      state.xp = saved.xp || 0;
+      state.completed = saved.completed || {};
+    }
+  } catch(e) {
+    // first time, no data
+  }
+}
+
+async function saveProgress() {
+  try {
+    await window.storage.set('codehunter-progress', JSON.stringify({
+      xp: state.xp,
+      completed: state.completed
+    }));
+  } catch(e) {
+    console.warn('Could not save progress');
+  }
+}
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+
+function updateHeader() {
+  document.getElementById('streak').textContent = state.streak;
+  document.getElementById('xp').textContent = state.xp;
+  
+  const livesEl = document.getElementById('lives');
+  livesEl.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const life = document.createElement('span');
+    life.className = 'life' + (i >= state.lives ? ' lost' : '');
+    life.textContent = '❤️';
+    livesEl.appendChild(life);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function showStreakFlash(text) {
+  const el = document.getElementById('streakFlash');
+  el.textContent = text;
+  el.classList.remove('show');
+  void el.offsetWidth; // trigger reflow
+  el.classList.add('show');
+}
+
+function spawnConfetti() {
+  const colors = ['#FF6B35', '#FBBF24', '#14B8A6', '#A78BFA', '#10B981'];
+  for (let i = 0; i < 60; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + '%';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    c.style.animationDelay = Math.random() * 0.5 + 's';
+    c.style.transform = `rotate(${Math.random() * 360}deg)`;
+    if (Math.random() > 0.5) {
+      c.style.borderRadius = '50%';
+    }
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
+// ============================================================
+// SCREENS
+// ============================================================
+
+function renderHome() {
+  state.screen = 'home';
+  const content = document.getElementById('content');
+  
+  const levels = Object.keys(LEVEL_INFO).map(n => {
+    const num = parseInt(n);
+    const info = LEVEL_INFO[num];
+    const done = state.completed[num];
+    const prevDone = num === 1 || state.completed[num - 1];
+    const locked = !prevDone;
+    
+    let badge = '';
+    if (done) badge = '<div class="level-badge badge-done">✓ Completado</div>';
+    else if (locked) badge = '<div class="level-badge badge-locked">🔒 Bloqueado</div>';
+    else badge = '<div class="level-badge badge-new">▶ Jugar</div>';
+    
+    return `
+      <div class="level-card ${done ? 'completed' : ''} ${locked ? 'locked' : ''}" 
+           ${!locked ? `onclick="startLevel(${num})"` : ''}>
+        ${badge}
+        <div class="level-num">${String(num).padStart(2, '0')}</div>
+        <div class="level-info">
+          <div class="level-title">${info.icon} ${info.title}</div>
+          <div class="level-desc">${info.desc}</div>
+        </div>
+        <div class="level-status">${done ? '⭐' : locked ? '🔒' : '→'}</div>
+      </div>
+    `;
+  }).join('');
+  
+  content.innerHTML = `
+    <div class="screen">
+      <div class="hero">
+        <div class="hero-badge">✈️ EasyFly Academy</div>
+        <h1>Caza de<br><span class="accent">Código Malo</span></h1>
+        <p>Identifica bugs, malos olores y deuda técnica como un revisor profesional. Basado en el caso real del Club EasyFly.</p>
+      </div>
+      <div class="levels">
+        ${levels}
+      </div>
+    </div>
+  `;
+  
+  updateHeader();
+}
+
+function startLevel(level) {
+  state.level = level;
+  state.lives = 3;
+  state.currentIndex = 0;
+  state.levelStats = { correct: 0, wrong: 0, hintsUsed: 0 };
+  
+  // Build queue: shuffle and take N exercises
+  const pool = shuffle(EXERCISES[level]);
+  state.exerciseQueue = pool.slice(0, Math.min(EXERCISES_PER_LEVEL, pool.length));
+  
+  renderExercise();
+}
+
+function renderExercise() {
+  if (state.currentIndex >= state.exerciseQueue.length) {
+    return renderLevelComplete();
+  }
+  
+  if (state.lives <= 0) {
+    return renderGameOver();
+  }
+  
+  state.screen = 'play';
+  state.hintUsed = false;
+  state.locked = false;
+  state.currentExercise = state.exerciseQueue[state.currentIndex];
+  
+  const ex = state.currentExercise;
+  const progress = ((state.currentIndex) / state.exerciseQueue.length) * 100;
+  
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="screen">
+      <div class="play-header">
+        <button class="btn-back" onclick="confirmExit()">←</button>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${progress}%"></div>
+        </div>
+      </div>
+      
+      <div class="question-box">
+        <div class="question-meta">
+          <div class="question-tag">
+            <span>Nivel ${state.level}</span>
+            <span>·</span>
+            <span>${state.currentIndex + 1}/${state.exerciseQueue.length}</span>
+          </div>
+          <button class="btn-hint" id="hintBtn" onclick="showHint()">
+            💡 Pista
+          </button>
+        </div>
+        
+        <div class="question-context">${ex.context}</div>
+        
+        <div class="question-title">${ex.title}</div>
+        
+        <div class="code-block"><pre>${ex.code}</pre></div>
+        
+        <div id="hintContainer"></div>
+        
+        <div class="options" id="options">
+          ${ex.options.map((opt, i) => renderOption(opt, i)).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  updateHeader();
+}
+
+function renderOption(label, index) {
+  const types = {
+    0: { title: 'BUG', desc: 'Error en la lógica', label: 'URGENTE' },
+    1: { title: 'MAL OLOR', desc: 'Funciona pero es feo', label: 'IMPORTANTE' },
+    2: { title: 'DEUDA TÉCNICA', desc: 'Atajo que se cobra', label: 'ESTRATÉGICO' },
+    3: { title: 'TODO CORRECTO', desc: 'Código limpio', label: 'OK' }
+  };
+  const t = types[index];
+  
+  return `
+    <button class="option" onclick="selectOption(${index})" data-index="${index}">
+      <div class="option-label">${t.label}</div>
+      <div class="option-title">${t.title}</div>
+      <div class="option-desc">${t.desc}</div>
+      <span class="tick">✓</span>
+    </button>
+  `;
+}
+
+function showHint() {
+  if (state.hintUsed) return;
+  state.hintUsed = true;
+  state.levelStats.hintsUsed++;
+  
+  document.getElementById('hintBtn').disabled = true;
+  document.getElementById('hintContainer').innerHTML = `
+    <div class="hint-box">
+      <strong>💡 Pista:</strong> ${state.currentExercise.hint}
+    </div>
+  `;
+}
+
+function selectOption(index) {
+  if (state.locked) return;
+  state.locked = true;
+  
+  const ex = state.currentExercise;
+  const correct = index === ex.correct;
+  const options = document.querySelectorAll('.option');
+  
+  options.forEach((opt, i) => {
+    opt.disabled = true;
+    if (i === index) opt.classList.add(correct ? 'correct' : 'wrong');
+    if (i === ex.correct && !correct) opt.classList.add('correct');
+  });
+  
+  if (correct) {
+    state.levelStats.correct++;
+    state.streak++;
+    const xpGained = state.hintUsed ? 5 : 10;
+    state.xp += xpGained;
+    
+    if (state.streak > 0 && state.streak % 3 === 0) {
+      showStreakFlash(`🔥 ¡${state.streak} seguidas!`);
+    }
+  } else {
+    state.levelStats.wrong++;
+    state.streak = 0;
+    state.lives--;
+  }
+  
+  updateHeader();
+  showFeedback(correct);
+}
+
+function showFeedback(correct) {
+  const ex = state.currentExercise;
+  const existing = document.querySelector('.feedback');
+  if (existing) existing.remove();
+  
+  const fb = document.createElement('div');
+  fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = `
+    <div class="feedback-inner">
+      <div class="feedback-header">
+        <span class="feedback-icon">${correct ? '🎯' : '❌'}</span>
+        <div class="feedback-title">${correct ? '¡Correcto!' : 'No era esa'}</div>
+      </div>
+      <div class="feedback-explanation">${ex.explanation}</div>
+      <button class="btn-continue" onclick="nextExercise()">
+        ${correct ? 'Continuar' : 'Entendido'}
+      </button>
+    </div>
+  `;
+  document.body.appendChild(fb);
+}
+
+function nextExercise() {
+  const fb = document.querySelector('.feedback');
+  if (fb) fb.remove();
+  
+  state.currentIndex++;
+  renderExercise();
+}
+
+function renderLevelComplete() {
+  state.screen = 'complete';
+  
+  const perfect = state.levelStats.wrong === 0;
+  const noHints = state.levelStats.hintsUsed === 0;
+  
+  // Bonus XP
+  let bonusXp = 0;
+  if (perfect) bonusXp += 25;
+  if (noHints && perfect) bonusXp += 15;
+  state.xp += bonusXp;
+  
+  // Mark level as completed
+  state.completed[state.level] = true;
+  saveProgress();
+  
+  const accuracy = Math.round((state.levelStats.correct / state.exerciseQueue.length) * 100);
+  
+  let emoji, title, subtitle;
+  if (perfect && noHints) {
+    emoji = '🏆';
+    title = '¡Perfecto!';
+    subtitle = 'Sin errores, sin pistas. Eres un cazador profesional.';
+  } else if (perfect) {
+    emoji = '🎯';
+    title = '¡Excelente!';
+    subtitle = 'Completaste el nivel sin errores.';
+  } else if (accuracy >= 60) {
+    emoji = '💪';
+    title = '¡Nivel superado!';
+    subtitle = 'Sigue practicando para dominar cada tipo.';
+  } else {
+    emoji = '📚';
+    title = 'Nivel completado';
+    subtitle = 'Revisa las explicaciones y vuelve a intentarlo.';
+  }
+  
+  if (perfect) spawnConfetti();
+  
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="screen result">
+      <div class="result-emoji">${emoji}</div>
+      <h2>${title}</h2>
+      <div class="subtitle">${subtitle}</div>
+      
+      <div class="result-stats">
+        <div class="result-stat">
+          <div class="result-stat-value">${state.levelStats.correct}/${state.exerciseQueue.length}</div>
+          <div class="result-stat-label">Aciertos</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">${accuracy}%</div>
+          <div class="result-stat-label">Precisión</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">+${state.xp - (state.xp - (state.levelStats.correct * 10 + bonusXp))}</div>
+          <div class="result-stat-label">XP ganado</div>
+        </div>
+      </div>
+      
+      <button class="btn-primary" onclick="startLevel(${state.level})">Jugar de nuevo</button>
+      ${state.level < 5 && state.completed[state.level] ? 
+        `<button class="btn-primary" onclick="startLevel(${state.level + 1})" style="background: var(--teal); box-shadow: 0 4px 20px rgba(20, 184, 166, 0.3)">Siguiente nivel</button>` : ''}
+      <button class="btn-secondary" onclick="renderHome()">Volver al menú</button>
+    </div>
+  `;
+  
+  updateHeader();
+}
+
+function renderGameOver() {
+  state.screen = 'gameover';
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="screen game-over">
+      <div class="result-emoji">💔</div>
+      <h2>Te quedaste sin vidas</h2>
+      <div class="subtitle">El revisor profesional aprende de cada error. ¡Vuelve a intentarlo!</div>
+      
+      <div class="result-stats">
+        <div class="result-stat">
+          <div class="result-stat-value">${state.levelStats.correct}</div>
+          <div class="result-stat-label">Aciertos</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">${state.levelStats.wrong}</div>
+          <div class="result-stat-label">Errores</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">${state.currentIndex}/${state.exerciseQueue.length}</div>
+          <div class="result-stat-label">Progreso</div>
+        </div>
+      </div>
+      
+      <button class="btn-primary" onclick="startLevel(${state.level})">Reintentar</button>
+      <button class="btn-secondary" onclick="renderHome()">Volver al menú</button>
+    </div>
+  `;
+  
+  updateHeader();
+}
+
+function confirmExit() {
+  if (confirm('¿Salir del nivel? Perderás el progreso actual.')) {
+    renderHome();
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+
+(async function init() {
+  await loadProgress();
+  renderHome();
+})();
+</script>
+
+</body>
+</html>
